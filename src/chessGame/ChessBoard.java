@@ -3,10 +3,154 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class ChessBoard {
-	Piece [][] board;
-	
-	Piece [] white = new Piece[16];
-	Piece [] black = new Piece[16];
-	
-}
 
+	
+	public static void main(String[] args) {
+//		set up board and player pieces
+		boolean gameOn = true;
+		boolean blackTurn = false;
+		Piece [][] board = new Piece[8][8];
+		
+		Piece [] white = new Piece[]{
+				new Pawn(), new Pawn(),new Pawn(),new Pawn(),new Pawn(),new Pawn(),new Pawn(),new Pawn(),
+				new Rook(), new Knight(), new Bishop(),  new Queen(), new King(), new Bishop(),  new Knight(),new Rook(), 
+				};
+		Piece [] black = new Piece[]{
+				new Pawn(), new Pawn(),new Pawn(),new Pawn(),new Pawn(),new Pawn(),new Pawn(),new Pawn(),
+				new Rook(), new Knight(), new Bishop(), new Queen(), new King(), new Bishop(), new Knight(), new Rook(), 
+				};
+		
+
+		for(int i =0; i < white.length; i++ ) {
+			white[i].black = false;
+		}
+		
+		board[7] = Arrays.copyOfRange(black, 8, 16);
+		board[6] = Arrays.copyOfRange(black, 0, 8);
+		board[0] = Arrays.copyOfRange(white, 8, 16);
+		board[1] = Arrays.copyOfRange(white, 0, 8);
+		
+//		temp deleting pieces for movement testing
+		board[1][0] = null;
+		board[1][1] = null;
+		board[6][0] = null;
+		board[6][1] = null;
+		
+		
+		drawBoard(board);
+//		printBoard(board);
+		String whiteMove = "", blackMove = "", mov = "";
+		System.out.println("New Game. White moves first.");
+		Scanner sc = new Scanner(System.in);
+		while(gameOn) {
+			//fromTo will hold input as an array split into from and to move
+			String [] fromTo;
+			System.out.println("black turn?" + blackTurn);
+			if(blackTurn) {
+				blackMove = sc.nextLine();
+				mov = blackMove;
+				fromTo = blackMove.split(" ");
+			}
+			else {
+				whiteMove = sc.nextLine();
+				mov = whiteMove;
+				fromTo = whiteMove.split(" ");
+			}
+//			end game if forfeit
+			if(whiteMove.equals("resign")){
+				gameOn = false;
+				System.out.println("Black wins");
+				break;
+			}
+			else if(blackMove.equals("resign")){
+				gameOn = false;
+				System.out.println("White wins");
+				break;
+			}
+			
+			System.out.println(fromTo[0] + " " + inputToInt(fromTo)[0] + " " + inputToInt(fromTo)[1] + " " + inputToInt(fromTo)[2] + " "+ inputToInt(fromTo)[3]);
+			int[] input = inputToInt(fromTo);
+			System.out.println("piece is black " + board[input[1]][input[0]].black);
+			
+			if(board[input[1]][input[0]] instanceof Piece  && board[input[1]][input[0]].black == blackTurn) {
+				System.out.println("instanceof piece");
+				Piece[][] temp = board[input[1]][input[0]].makemove(board, input);
+				if(!Arrays.deepEquals(board, temp)) {
+//					System.out.println("original board different from temp");
+					board = temp;
+//					System.out.println("black turn after moves: " + blackTurn);
+				}
+
+			}
+			else {
+				System.out.println("instanceof nuttin ");
+				blackTurn = !blackTurn;
+				
+			}
+			blackTurn = !blackTurn;
+			drawBoard(board);
+		}
+		
+	}
+	
+// convert input move to int array
+	public static int[] inputToInt(String[] splitentry) {
+		int fromx = splitentry[0].charAt(0) - 'a' ;
+		int fromy = splitentry[0].charAt(1) - 49;
+		int tox = splitentry[1].charAt(0) - 'a' ;
+		int toy = splitentry[1].charAt(1) - 49;
+		
+		return new int[] {fromx, fromy, tox, toy};
+	}
+
+	
+//	print each row of the board
+	public static String row(Piece[] row, int rowNumber) {
+		String r = "";
+		for(int i =0; i < row.length; i++) {
+			if(row[i] instanceof Piece) {
+
+				if(row[i].black) {
+						r += "b"+row[i].name + " ";
+					}
+					else
+						r += "w"+row[i].name + " ";
+			}
+			else {
+				if(rowNumber%2 == 0) {
+					if(i%2 == 0) {
+						r+= "   ";
+					}
+					else 
+						r+= "## ";
+				}
+				else {
+					if(i%2 == 1) {
+						r+= "   ";
+					}
+					else 
+						r+= "## ";
+				}
+			}
+		}
+		
+		return r + "" + (rowNumber+1);
+	}
+	
+	public static void drawBoard(Piece[][] board) {
+//		return board as string
+		for(int i = 7; i >= 0; i--) {
+			System.out.println(row(board[i], i));
+		}
+		System.out.println(" a  b  c  d  e  f  g  h");
+	}
+
+
+	public static void printBoard(Piece[][] board) {
+		for(int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++){
+				System.out.print(board[i][j] + " ");
+			}
+		}
+	}
+}
