@@ -45,7 +45,7 @@ public class ChessBoard {
 		while(gameOn) {
 			//fromTo will hold input as an array split into from and to move
 			String [] fromTo;
-			System.out.println("black turn?" + blackTurn);
+
 			if(blackTurn) {
 				blackMove = sc.nextLine();
 				mov = blackMove;
@@ -70,28 +70,49 @@ public class ChessBoard {
 			
 			System.out.println(fromTo[0] + " " + inputToInt(fromTo)[0] + " " + inputToInt(fromTo)[1] + " " + inputToInt(fromTo)[2] + " "+ inputToInt(fromTo)[3]);
 			int[] input = inputToInt(fromTo);
-			System.out.println("piece is black " + board[input[1]][input[0]].black);
+//			System.out.println("black turn before moves: " + blackTurn);
 			
-			if(board[input[1]][input[0]] instanceof Piece  && board[input[1]][input[0]].black == blackTurn) {
-				System.out.println("instanceof piece");
-				Piece[][] temp = board[input[1]][input[0]].makemove(board, input);
-				if(!Arrays.deepEquals(board, temp)) {
-//					System.out.println("original board different from temp");
-					board = temp;
-//					System.out.println("black turn after moves: " + blackTurn);
+			
+			
+			if(board[input[1]][input[0]] instanceof Piece && board[input[1]][input[0]].black == blackTurn) {
+//				System.out.println("instanceof piece");
+				
+				blackTurn = !blackTurn;
+				
+				Piece[][] temp = copy(board);
+				board = board[input[1]][input[0]].makemove(board, input);
+//				drawBoard(temp);
+//				drawBoard(board);
+				
+				if(Arrays.deepEquals(board, temp)) {
+//					System.out.println("original board as copy");
+					blackTurn = !blackTurn;
 				}
+//				else
+//					board = board[input[1]][input[0]].makemove(board, input);
+				
 
 			}
 			else {
-				System.out.println("instanceof nuttin ");
-				blackTurn = !blackTurn;
-				
+//				System.out.println("instanceof nuttin ");
+//				blackTurn = !blackTurn;
 			}
-			blackTurn = !blackTurn;
+//			System.out.println("black turn after moves: " + blackTurn);
 			drawBoard(board);
 		}
 		
 	}
+	
+//	copy board onto temp
+	public static Piece[][] copy(Piece[][] board){
+		Piece[][] copy = new Piece[8][8];
+		for (int y = 7; y >= 0; y--)
+		    for (int x = 7; x >= 0; x--)
+		        copy[x][y] = board[x][y];
+
+		return copy;
+	}
+	
 	
 // convert input move to int array
 	public static int[] inputToInt(String[] splitentry) {
