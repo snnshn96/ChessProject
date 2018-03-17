@@ -24,17 +24,31 @@ public class ChessBoard {
 		for(int i =0; i < white.length; i++ ) {
 			white[i].black = false;
 		}
-		
+		String[] names = {"Q", "R", "N", "B"};
+				
+				
 		board[7] = Arrays.copyOfRange(black, 8, 16);
 		board[6] = Arrays.copyOfRange(black, 0, 8);
 		board[0] = Arrays.copyOfRange(white, 8, 16);
 		board[1] = Arrays.copyOfRange(white, 0, 8);
 		
 //		temp deleting pieces for movement testing
-		board[1][0] = null;
-		board[1][1] = null;
 		board[6][0] = null;
-		board[6][1] = null;
+		board[1][0] = null;
+//		board[0][2] = null;
+//		board[0][3] = null;
+//		board[0][4] = null;
+//		board[0][5] = null;
+//		board[0][6] = null;
+//		board[0][7] = null;
+//		board[7][0] = null;
+//		board[7][1] = null;
+//		board[7][2] = null;
+//		board[7][3] = null;
+//		board[7][4] = null;
+//		board[7][5] = null;
+//		board[7][6] = null;
+//		board[7][7] = null;
 		
 		
 		drawBoard(board);
@@ -68,29 +82,83 @@ public class ChessBoard {
 				break;
 			}
 			
-			System.out.println(fromTo[0] + " " + inputToInt(fromTo)[0] + " " + inputToInt(fromTo)[1] + " " + inputToInt(fromTo)[2] + " "+ inputToInt(fromTo)[3]);
+//			System.out.println(fromTo[0] + " " + inputToInt(fromTo)[0] + " " + inputToInt(fromTo)[1] + " " + inputToInt(fromTo)[2] + " "+ inputToInt(fromTo)[3]);
 			int[] input = inputToInt(fromTo);
-//			System.out.println("black turn before moves: " + blackTurn);
+			
+			if(fromTo.length == 2 && board[input[1]][input[0]] instanceof Pawn &&((board[input[1]][input[0]].black && input[3] == 0) ||  (!board[input[1]][input[0]].black && input[3] == 7))) {
+				blackTurn = !blackTurn;
+				boolean color = board[input[1]][input[0]].black;
+				Piece[][] temp = copy(board);
+				board = board[input[1]][input[0]].makemove(board, input);
+				
+				if(Arrays.deepEquals(board, temp)) {
+
+					blackTurn = !blackTurn;
+				}
+				else {
+					Queen q = new Queen();
+					q.black = color;
+					board[input[3]][input[2]] = q;
+				}
+			}
+			
+			if(fromTo.length == 3) {
+//				check for pawn promotion command
+				if(Arrays.asList(names).contains(fromTo[2]) && board[input[1]][input[0]] instanceof Pawn) {
+//					check if pawn piece is reaching 8th rank
+					if((board[input[1]][input[0]].black && input[3] == 0) ||  (!board[input[1]][input[0]].black && input[3] == 7)) {
+						blackTurn = !blackTurn;
+						boolean color = board[input[1]][input[0]].black;
+						Piece[][] temp = copy(board);
+						board = board[input[1]][input[0]].makemove(board, input);
+						
+						if(Arrays.deepEquals(board, temp)) {
+
+							blackTurn = !blackTurn;
+						}
+						else {
+//							promote here 
+							switch (fromTo[2]) {
+								case "Q": 
+									Queen q = new Queen();
+									q.black = color;
+									board[input[3]][input[2]] = q;
+									break;
+								case "R":
+									Rook r = new Rook();
+									r.black = color;
+									board[input[3]][input[2]] = r;
+									break;
+								case "N":
+									Knight n = new Knight();
+									n.black = color;
+									board[input[3]][input[2]] = n;
+									break;
+								case "B":
+									Bishop b = new Bishop();
+									b.black = color;
+									board[input[3]][input[2]] = b;
+									break;
+							}
+						}
+					}
+				}
+			}
 			
 			
-			
-			if(board[input[1]][input[0]] instanceof Piece && board[input[1]][input[0]].black == blackTurn) {
-//				System.out.println("instanceof piece");
+			else if(board[input[1]][input[0]] instanceof Piece && board[input[1]][input[0]].black == blackTurn) {
 				
 				blackTurn = !blackTurn;
 				
 				Piece[][] temp = copy(board);
 				board = board[input[1]][input[0]].makemove(board, input);
-//				drawBoard(temp);
-//				drawBoard(board);
+
 				
 				if(Arrays.deepEquals(board, temp)) {
-//					System.out.println("original board as copy");
+
 					blackTurn = !blackTurn;
 				}
-//				else
-//					board = board[input[1]][input[0]].makemove(board, input);
-				
+		
 
 			}
 			else {
