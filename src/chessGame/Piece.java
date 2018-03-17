@@ -7,7 +7,7 @@ import java.util.Arrays;
 public abstract class Piece {
 	boolean black = true;
 	String name;
-	boolean captured = false;
+	boolean enpassant = false;
 	//piece movement code under makemove method. return board after move is validated and completed
 	Piece[][] makemove(Piece [][] board, int[] moves){
 //		System.out.println("This is generic piece");
@@ -18,7 +18,6 @@ public abstract class Piece {
 
 class Pawn extends Piece {
 	boolean moved = false;
-	boolean doublestep = false;
 	boolean enpassant = false;
 	{
 		super.name = "p";
@@ -26,33 +25,79 @@ class Pawn extends Piece {
 	
 	Piece[][] makemove(Piece [][] board, int[] moves){
 //		System.out.println("This is a pawn piece " + black);
-
 		
 		if(Math.abs(moves[0] - moves[2]) == 1) {
 //			check if its trying to capture
-			if(Math.abs(moves[1] - moves[3]) == 1 && (board[moves[3]][moves[2]] instanceof Piece) && board[moves[3]][moves[2]].black != this.black) {
-				Piece m = board[moves[1]][moves[0]];
-				board[moves[3]][moves[2]] = m;
-				board[moves[1]][moves[0]] = null;
-				this.moved = true;
+			if(Math.abs(moves[1] - moves[3]) == 1) {
+//				enpassant logic here
+				if(board[moves[3]][moves[2]] == null ) {
+					if(moves[1] < moves[3]) {
+//						up
+						if(board[moves[3]-1][moves[2]] instanceof Pawn) {
+							Piece en = board[moves[3]-1][moves[2]];
+							if(en.enpassant && en.black !=  board[moves[1]][moves[0]].black) {
+//								System.out.println("reach if");
+//								do capture 
+								Piece m = board[moves[1]][moves[0]];
+								System.out.println(m);
+								board[moves[3]][moves[2]] = m;
+								board[moves[1]][moves[0]] = null;
+								board[moves[3]-1][moves[2]] = null;
+
+								this.moved = true;
+							}
+						}
+					}
+					else if(moves[1] > moves[3]){
+//						down
+						if(board[moves[3]+1][moves[2]] instanceof Pawn) {
+							Piece en = board[moves[3]+1][moves[2]];
+							if(en.enpassant && en.black !=  board[moves[1]][moves[0]].black) {
+//								System.out.println("reach if");
+//								do capture 
+								Piece m = board[moves[1]][moves[0]];
+								System.out.println(m);
+								board[moves[3]][moves[2]] = m;
+								board[moves[1]][moves[0]] = null;
+								board[moves[3]+1][moves[2]] = null;
+
+								this.moved = true;
+							}
+						}
+					}
+					else {
+						System.out.println("Illegal move, try again");
+					}
+					
+				}
+				else if(Math.abs(moves[1] - moves[3]) == 1 && (board[moves[3]][moves[2]] instanceof Piece) && board[moves[3]][moves[2]].black != this.black) {
+//					regular capture
+					Piece m = board[moves[1]][moves[0]];
+					board[moves[3]][moves[2]] = m;
+					board[moves[1]][moves[0]] = null;
+					this.moved = true;
+				}
 			}
 		}
 		else if(moves[0] == moves[2]) {
 //			same column, moving forward
 //			prevent white and black pieces from moving backward
 			if(moves[1] < moves[3] && this.black) {
+				System.out.println("Illegal move, try again");
 				return board;
 			}
 			else if(moves[3] < moves[1] && !this.black) {
+				System.out.println("Illegal move, try again");
 				return board;
 			}
 			
-			if(Math.abs(moves[1] - moves[3]) == 2 && !this.moved && !(board[moves[3]][moves[2]] instanceof Piece)) {
+			if(Math.abs(moves[1] - moves[3]) == 2 && !this.moved && !(board[moves[3]][moves[2]] instanceof Piece) /*&& !(board[moves[3] - 1][moves[2]] instanceof Piece)*/) {
 //				move two spaces
 				Piece m = board[moves[1]][moves[0]];
 				board[moves[3]][moves[2]] = m;
 				board[moves[1]][moves[0]] = null;
 				this.moved = true;
+				m.enpassant = true; 
 			}
 			else if(Math.abs(moves[1] - moves[3]) == 1) {
 				if(!(board[moves[3]][moves[2]] instanceof Piece)) {
@@ -62,6 +107,7 @@ class Pawn extends Piece {
 					board[moves[3]][moves[2]] = m;
 					board[moves[1]][moves[0]] = null;
 					this.moved = true;
+					
 				}
 			}
 		}

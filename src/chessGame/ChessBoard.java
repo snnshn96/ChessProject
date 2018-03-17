@@ -33,8 +33,8 @@ public class ChessBoard {
 		board[1] = Arrays.copyOfRange(white, 0, 8);
 		
 //		temp deleting pieces for movement testing
-		board[6][0] = null;
-		board[1][0] = null;
+//		board[6][0] = null;
+//		board[1][0] = null;
 //		board[0][2] = null;
 //		board[0][3] = null;
 //		board[0][4] = null;
@@ -166,11 +166,24 @@ public class ChessBoard {
 //				blackTurn = !blackTurn;
 			}
 //			System.out.println("black turn after moves: " + blackTurn);
+			
+//			take board and false all en passants on opposite turn
+			board = falseEnpassant(board, blackTurn);
 			drawBoard(board);
 		}
 		
 	}
 	
+	
+// false all enpassant
+	public static Piece[][] falseEnpassant(Piece[][] board, boolean turn){
+		for (int y = 7; y >= 0; y--)
+		    for (int x = 7; x >= 0; x--)
+		        if(board[x][y] != null && board[x][y].black == turn) {
+		        	board[x][y].enpassant = false;
+		        }	
+		return board;
+	}
 //	copy board onto temp
 	public static Piece[][] copy(Piece[][] board){
 		Piece[][] copy = new Piece[8][8];
