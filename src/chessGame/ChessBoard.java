@@ -35,20 +35,7 @@ public class ChessBoard {
 //		temp deleting pieces for movement testing
 //		board[6][0] = null;
 //		board[1][0] = null;
-//		board[0][2] = null;
-//		board[0][3] = null;
-//		board[0][4] = null;
-//		board[0][5] = null;
-//		board[0][6] = null;
-//		board[0][7] = null;
-//		board[7][0] = null;
-//		board[7][1] = null;
-//		board[7][2] = null;
-//		board[7][3] = null;
-//		board[7][4] = null;
-//		board[7][5] = null;
-//		board[7][6] = null;
-//		board[7][7] = null;
+
 		
 		
 		drawBoard(board);
@@ -61,11 +48,13 @@ public class ChessBoard {
 			String [] fromTo;
 
 			if(blackTurn) {
+				System.out.println("Black Turn");
 				blackMove = sc.nextLine();
 				mov = blackMove;
 				fromTo = blackMove.split(" ");
 			}
 			else {
+				System.out.println("White Turn");
 				whiteMove = sc.nextLine();
 				mov = whiteMove;
 				fromTo = whiteMove.split(" ");

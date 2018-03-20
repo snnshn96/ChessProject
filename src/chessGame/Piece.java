@@ -8,6 +8,7 @@ public abstract class Piece {
 	boolean black = true;
 	String name;
 	boolean enpassant = false;
+	boolean moved = false;
 	//piece movement code under makemove method. return board after move is validated and completed
 	Piece[][] makemove(Piece [][] board, int[] moves){
 //		System.out.println("This is generic piece");
@@ -39,7 +40,7 @@ class Pawn extends Piece {
 //								System.out.println("reach if");
 //								do capture 
 								Piece m = board[moves[1]][moves[0]];
-								System.out.println(m);
+//								System.out.println(m);
 								board[moves[3]][moves[2]] = m;
 								board[moves[1]][moves[0]] = null;
 								board[moves[3]-1][moves[2]] = null;
@@ -56,7 +57,7 @@ class Pawn extends Piece {
 //								System.out.println("reach if");
 //								do capture 
 								Piece m = board[moves[1]][moves[0]];
-								System.out.println(m);
+//								System.out.println(m);
 								board[moves[3]][moves[2]] = m;
 								board[moves[1]][moves[0]] = null;
 								board[moves[3]+1][moves[2]] = null;
@@ -155,9 +156,9 @@ class Rook extends Piece {
 			}
 			
 			//does not account for capturing pieces yet
-			System.out.println("b4 loop");
+//			System.out.println("b4 loop");
 			for(int i = 0; i < check.length; i++) {
-				System.out.println("checkarr "+ check[i] + " " + i);
+//				System.out.println("checkarr "+ check[i] + " " + i);
 				if(check[i] instanceof Piece ) {
 //					System.out.println(count);
 					if(i == 0 && check[i].black != this.black) {
@@ -218,7 +219,7 @@ class Rook extends Piece {
 			Piece m = board[moves[1]][moves[0]];
 			board[moves[3]][moves[2]] = m;
 			board[moves[1]][moves[0]] = null;
-			
+			this.moved = true;
 			return board;
 		}
 		else {
@@ -539,17 +540,64 @@ class King extends Piece {
 	            {-1, -1},
 	            {1, -1}
 	        };
-	    for(int i = 0; i < offsets.length; i++) {
-//	    	System.out.println(offsets[i][0] +" " + offsets[i][1]  + ": " + kingoffset[0]+" " +kingoffset[1]);
-	    	if(Arrays.equals(offsets[i], kingoffset))
-	    		valid = true;
+	    
+//	    first check if its trying to castle
+	    if(Math.abs(moves[0] - moves[2]) == 2) {
+//	    	trying to move two spaces either side
+	    	if(this.moved) {
+	    		System.out.println("Illegal move, try again");
+	    		return board;
+	    	}
+	    	else if(moves[0] < moves[2]) {
+//	    		moving right 
+	    		if(board[moves[1]][moves[0]+3] instanceof Rook && !board[moves[1]][moves[0]+3].moved && 
+	    				board[moves[1]][moves[0]+1] == null && board[moves[1]][moves[0]+2] == null) {
+//	    			check if rook in initial position and hasnt moved and space in between is empty
+	    			Piece m = board[moves[1]][moves[0]];
+	    			Piece r = board[moves[1]][moves[0]+3];
+	    			board[moves[3]][moves[2]] = m;
+	    			board[moves[3]][moves[2]-1] = r;
+	    			board[moves[1]][moves[0]] = null;
+	    			board[moves[1]][moves[0]+3] = null;
+	    			this.moved = true;
+	    			r.moved = true;
+	    			return board;
+	    		}
+	    	}
+    		else if(moves[0] > moves[2]){
+//	    			going left
+	    		if(board[moves[1]][moves[0]-4] instanceof Rook && !board[moves[1]][moves[0]-4].moved && 
+	    				board[moves[1]][moves[0]-1] == null && board[moves[1]][moves[0]-2] == null &&
+	    				board[moves[1]][moves[0]-3] == null) {
+//		    			check if rook in initial position and hasnt moved and space in between is empty
+	    			Piece m = board[moves[1]][moves[0]];
+	    			Piece r = board[moves[1]][moves[0]-4];
+	    			board[moves[3]][moves[2]] = m;
+	    			board[moves[3]][moves[2]+1] = r;
+	    			board[moves[1]][moves[0]] = null;
+	    			board[moves[1]][moves[0]-4] = null;
+	    			this.moved = true;
+	    			r.moved = true;
+	    			return board;
+	    		}
+    		}
+	    	
+	    }
+	    
+	    else {
+//	    	check for if king did a regular move
+		    for(int i = 0; i < offsets.length; i++) {
+	//	    	System.out.println(offsets[i][0] +" " + offsets[i][1]  + ": " + kingoffset[0]+" " +kingoffset[1]);
+		    	if(Arrays.equals(offsets[i], kingoffset))
+		    		valid = true;
+		    }
 	    }
 	    
 	    if(valid && (board[moves[3]][moves[2]] == null || (board[moves[3]][moves[2]] instanceof Piece && board[moves[3]][moves[2]].black != this.black))) {
 			Piece m = board[moves[1]][moves[0]];
 			board[moves[3]][moves[2]] = m;
 			board[moves[1]][moves[0]] = null;
-			
+			this.moved = true;
 			return board;
 	    }
 		System.out.println("Illegal move, try again");
