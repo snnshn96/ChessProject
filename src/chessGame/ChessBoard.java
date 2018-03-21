@@ -41,21 +41,25 @@ public class ChessBoard {
 		drawBoard(board);
 //		printBoard(board);
 		String whiteMove = "", blackMove = "", mov = "";
-		System.out.println("New Game. White moves first.");
+		//System.out.println("New Game. White moves first."); Assignment want specific outputs or penalty
 		Scanner sc = new Scanner(System.in);
+		
+		boolean drawAsked = false;
 		while(gameOn) {
 			//fromTo will hold input as an array split into from and to move
 			String [] fromTo;
-
+			
 			if(blackTurn) {
-				System.out.println("Black Turn");
+				System.out.print("\nBlack's move: ");
 				blackMove = sc.nextLine();
+				System.out.println();
 				mov = blackMove;
 				fromTo = blackMove.split(" ");
 			}
 			else {
-				System.out.println("White Turn");
+				System.out.print("\nWhite's move: ");
 				whiteMove = sc.nextLine();
+				System.out.println();
 				mov = whiteMove;
 				fromTo = whiteMove.split(" ");
 			}
@@ -69,6 +73,19 @@ public class ChessBoard {
 				gameOn = false;
 				System.out.println("White wins");
 				break;
+			}
+			
+			// Handling Draw
+			if(drawAsked && (whiteMove.equals("draw") || blackMove.equals("draw"))) {
+				System.out.println("Draw");
+				break;
+			} else {
+				drawAsked = false;
+			}
+			
+			if (fromTo.length == 3 && fromTo[2].equals("draw?")) {
+				drawAsked = true;
+				fromTo = new String[] {fromTo[0], fromTo[1]};
 			}
 			
 //			System.out.println(fromTo[0] + " " + inputToInt(fromTo)[0] + " " + inputToInt(fromTo)[1] + " " + inputToInt(fromTo)[2] + " "+ inputToInt(fromTo)[3]);
