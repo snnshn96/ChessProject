@@ -179,18 +179,18 @@ class Rook extends Piece {
 		else if(moves[1] == moves[3]) {
 //			rows are the same
 			Piece[] check = new Piece[Math.abs(moves[2]-moves[0])];
-			System.out.println(check.length);
+//			System.out.println(check.length);
 //			look at all the spaces between the rows
 			if(moves[0] < moves[2]) {
-//				rook is moving left
+//				rook is moving right
 				for(int i = moves[2]; i > moves[0]; i--) {
 					check[count] = board[moves[1]][i];
 					count++;
 				}
 			}
 			else {
-//				going right
-				for(int i = moves[2]; i > moves[0]; i++) {
+//				going left
+				for(int i = moves[2]; i < moves[0]; i++) {
 					check[count] = board[moves[1]][i];
 					count++;
 				}
@@ -198,11 +198,11 @@ class Rook extends Piece {
 			
 			//does not account for capturing pieces yet
 			for(int i = 0; i < check.length; i++) {
-				System.out.print(check[i] + " ");
+//				System.out.println("checkarr "+ check[i] + " " + i);
 				if(check[i] instanceof Piece ) {
 //					System.out.println(count);
 					if(i == 0 && check[i].black != this.black) {
-						break;
+						continue;
 					}
 					else {
 						System.out.println("Illegal move, try again");
