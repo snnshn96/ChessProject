@@ -1,8 +1,8 @@
-package chessGame;
+package chess;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class ChessBoard {
+public class Chess {
 
 	
 	public static void main(String[] args) {
