@@ -770,78 +770,247 @@ class Queen extends Piece {
 
 		// bishop stuff
 		else if (Math.abs(moves[0] - moves[2]) == Math.abs(moves[1] - moves[3])) {
-			// moving diagonal
-			Piece[] check = new Piece[Math.abs(moves[3] - moves[1])];
-			int count = 0;
-			if (Math.abs(moves[2] - moves[0]) == 1) {
-				// System.out.println("1 col apart");
-				if (board.pieces[moves[3]][moves[2]] instanceof Piece
-						&& this.black == board.pieces[moves[3]][moves[2]].black) {
-					// System.out.println("Illegal move, try again");
-					return board;
-				}
-
-			}
-
-			if (moves[0] < moves[2]) {
-				if (moves[1] < moves[3]) {
-					// moving top right
-					// System.out.println("top right");
-					for (int i = 1; i < check.length; i++) {
-						check[count] = board.pieces[moves[1] + i][moves[0] + i];
-						count++;
-					}
-				} else {
-					// moving bottom right
-					// System.out.println("bot right");
-					for (int i = 1; i < check.length - 1; i++) {
-						check[count] = board.pieces[moves[1] - i][moves[0] + i];
-						count++;
-					}
-				}
+			// System.out.println("This is a bishop piece");
+			// System.out.println(Arrays.toString(moves));
+			if (board.pieces[moves[3]][moves[2]] != null && board.pieces[moves[3]][moves[2]] instanceof Piece
+					&& board.pieces[moves[1]][moves[0]].black == board.pieces[moves[3]][moves[2]].black) {
+				return board;
 			} else {
-				if (moves[1] < moves[3]) {
-					// moving top left
-					// System.out.println("top left");
-					for (int i = 1; i < check.length; i++) {
-						check[count] = board.pieces[moves[1] + i][moves[0] - i];
-						count++;
+				// Piece[] check = new Piece[Math.abs(moves[3] - moves[1])];
+				ArrayList<Piece> check = new ArrayList<Piece>();
+
+				if (moves[0] < moves[2]) {
+					if (moves[1] < moves[3]) {
+						// moving top right
+						for (int i = 1; (moves[1] + i < moves[3] && moves[0] + i < moves[2]); i++) {
+							if (board.pieces[moves[1] + i][moves[0] + i] instanceof Piece) {
+								return board;
+							}
+						}
+					} else {
+						// moving bottom right
+						for (int i = 1; (moves[1] - i > moves[3] && moves[0] + i < moves[2]); i++) {
+							if (board.pieces[moves[1] - i][moves[0] + i] instanceof Piece) {
+								return board;
+							}
+						}
 					}
 				} else {
-					// moving bottom left
-					// System.out.println("bot left");
-					for (int i = 1; i < check.length; i++) {
-						check[count] = board.pieces[moves[1] - i][moves[0] - i];
-						count++;
+					if (moves[1] < moves[3]) {
+						// moving top left
+						for (int i = 1; (moves[1] + i < moves[3] && moves[0] - i > moves[2]); i++) {
+							if (board.pieces[moves[1] + i][moves[0] - i] instanceof Piece) {
+								return board;
+							}
+						}
+					} else {
+						// moving bottom left
+						for (int i = 1; (moves[1] - i > moves[3] && moves[0] - i > moves[2]); i++) {
+							if (board.pieces[moves[1] - i][moves[0] - i] instanceof Piece) {
+								return board;
+							}
+						}
 					}
 				}
-			}
-			// System.out.println(Arrays.toString(check));
-			for (int i = 0; i < check.length; i++) {
-				if (check[i] instanceof Piece) {
-					// System.out.println("Illegal move, try again");
-					return board;
-				}
-			}
-			Piece m = board.pieces[moves[1]][moves[0]];
-			board.pieces[moves[3]][moves[2]] = m;
-			board.pieces[moves[1]][moves[0]] = null;
+				Piece m = board.pieces[moves[1]][moves[0]];
+				board.pieces[moves[3]][moves[2]] = m;
+				board.pieces[moves[1]][moves[0]] = null;
 
-			return board;
-
+				return board;
+			}
 		}
 
 		// System.out.println("Illegal move, try again");
 		return board;
 	}
 
-	// public boolean canIAttackHere(Board board, int[] moves) {
-	// return false;
-	// }
-	//
-	// public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
-	// return null;
-	// }
+	public boolean canIAttackHere(Board board, int[] moves) {
+
+		// System.out.println("This is a queen piece");
+		// rook stuff
+		if (moves[0] == moves[2] || moves[1] == moves[3]) {
+			// moving in rook pattern
+			int count = 0;
+			// moving up or down
+			if (moves[0] == moves[2]) {
+				Piece[] check = new Piece[Math.abs(moves[3] - moves[1])];
+				// System.out.println(check.length);
+				// look at all the spaces between the rows
+				if (moves[1] < moves[3]) {
+					// rook is moving up
+					for (int i = moves[3]; i > moves[1] + 1; i--) {
+						check[count] = board.pieces[i][moves[0]];
+						count++;
+					}
+				} else {
+					for (int i = moves[1] - 1; i > moves[3]; i--) {
+						check[count] = board.pieces[i][moves[0]];
+						count++;
+					}
+				}
+
+				// does not account for capturing pieces yet
+				for (int i = 0; i < check.length - 1; i++) {
+					if (check[i] instanceof Piece) {
+						// System.out.println(count);
+						// System.out.println("Illegal move, try again");
+						return false;
+					}
+				}
+
+				return true;
+			} else if (moves[1] == moves[3]) {
+				Piece[] check = new Piece[Math.abs(moves[2] - moves[0])];
+				// System.out.println(check.length);
+				// look at all the spaces between the rows
+				if (moves[0] < moves[2]) {
+					// rook is moving up
+					for (int i = moves[2]; i > moves[0] + 1; i--) {
+						check[count] = board.pieces[i][moves[1]];
+						count++;
+					}
+				} else {
+					for (int i = moves[0] - 1; i > moves[2]; i--) {
+						check[count] = board.pieces[i][moves[1]];
+						count++;
+					}
+				}
+
+				// does not account for capturing pieces yet
+				for (int i = 0; i < check.length - 1; i++) {
+					// System.out.print(check[i] + " ");
+					if (check[i] instanceof Piece) {
+						// System.out.println(count);
+						// System.out.println("Illegal move, try again");
+						return false;
+					}
+				}
+
+				// if reached this point, valid move
+				// check for capture
+				return true;
+			}
+		}
+
+		// bishop stuff
+		else if (Math.abs(moves[0] - moves[2]) == Math.abs(moves[1] - moves[3])) {
+			// System.out.println("This is a bishop piece");
+			// System.out.println(Arrays.toString(moves));
+			if (board.pieces[moves[3]][moves[2]] != null && board.pieces[moves[3]][moves[2]] instanceof Piece
+					&& board.pieces[moves[1]][moves[0]].black == board.pieces[moves[3]][moves[2]].black) {
+				return false;
+			} else {
+				// Piece[] check = new Piece[Math.abs(moves[3] - moves[1])];
+				ArrayList<Piece> check = new ArrayList<Piece>();
+
+				if (moves[0] < moves[2]) {
+					if (moves[1] < moves[3]) {
+						// moving top right
+						for (int i = 1; (moves[1] + i < moves[3] && moves[0] + i < moves[2]); i++) {
+							if (board.pieces[moves[1] + i][moves[0] + i] instanceof Piece) {
+								return false;
+							}
+						}
+					} else {
+						// moving bottom right
+						for (int i = 1; (moves[1] - i > moves[3] && moves[0] + i < moves[2]); i++) {
+							if (board.pieces[moves[1] - i][moves[0] + i] instanceof Piece) {
+								return false;
+							}
+						}
+					}
+				} else {
+					if (moves[1] < moves[3]) {
+						// moving top left
+						for (int i = 1; (moves[1] + i < moves[3] && moves[0] - i > moves[2]); i++) {
+							if (board.pieces[moves[1] + i][moves[0] - i] instanceof Piece) {
+								return false;
+							}
+						}
+					} else {
+						// moving bottom left
+						for (int i = 1; (moves[1] - i > moves[3] && moves[0] - i > moves[2]); i++) {
+							if (board.pieces[moves[1] - i][moves[0] - i] instanceof Piece) {
+								return false;
+							}
+						}
+					}
+				}
+				return true;
+			}
+		}
+		// System.out.println("Illegal move, try again");
+		return false;
+	}
+
+	public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
+		ArrayList<boardLoc> points = new ArrayList<boardLoc>();
+		Piece currpiece = board.pieces[loc.row][loc.col];
+
+		//Bishop Stuff
+		// Left Up
+		int newRow = loc.row + 1;
+		int newCol = loc.col - 1;
+		while (newRow <= 7 && newCol >= 0) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow++;
+			newCol--;
+		}
+		// Left Down
+		newRow = loc.row - 1;
+		newCol = loc.col - 1;
+		while (newRow >= 0 && newCol >= 0) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow--;
+			newCol--;
+		}
+		// Right Up
+		newRow = loc.row + 1;
+		newCol = loc.col + 1;
+		while (newRow <= 7 && newCol <= 7) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow++;
+			newCol++;
+		}
+		// Right Down
+		newRow = loc.row - 1;
+		newCol = loc.col + 1;
+		while (newRow >= 0 && newCol <= 7) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow--;
+			newCol++;
+		}
+		
+		// Rook Stuff
+		for (int row = 0; row < 8; row++) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, loc.col, row })) {
+				points.add(new boardLoc(row, loc.col));
+			}
+		}
+		for (int col = 0; col < 8; col++) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, col, loc.row })) {
+				points.add(new boardLoc(loc.row, col));
+			}
+		}
+
+		return points;
+	}
 }
 
 class King extends Piece {
