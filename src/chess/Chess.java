@@ -22,8 +22,13 @@ public class Chess {
 		board.pieces[4][1] = board.pieces[7][2];
 		board.pieces[7][2] = null;
 		
-		board.pieces[4][4] = board.pieces[7][3]; 
-		board.pieces[7][3] = null;
+		
+		board.pieces[3][4] = board.pieces[0][4];
+		board.pieces[0][4] = null;
+		board.pieces[5][4] = board.pieces[7][4];
+		board.pieces[7][4] = null;
+		//board.pieces[4][4] = board.pieces[7][3]; 
+		//board.pieces[7][3] = null;
 		// board.pieces[6][0] = board.pieces[1][1];
 		// board.pieces[1][1] = null;
 
@@ -98,12 +103,12 @@ public class Chess {
 				// ====== CHECK
 				boolean blackInCheck = Board.isItCheck(board, true);
 				boolean whiteInCheck = Board.isItCheck(board, false);
-				if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-					System.out.println("Check\n");
-				}
+				
 				if ((!blackTurn && blackInCheck) || (blackTurn && whiteInCheck)) {
 					// goes again until not check. Revert to old board
 					board.pieces = temp;
+				}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
+					System.out.println("Check\n");
 				}
 				// ===============
 
@@ -130,12 +135,11 @@ public class Chess {
 						// ====== CHECK
 						boolean blackInCheck = Board.isItCheck(board, true);
 						boolean whiteInCheck = Board.isItCheck(board, false);
-						if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-							System.out.println("Check\n");
-						}
 						if ((!blackTurn && blackInCheck) || (blackTurn && whiteInCheck)) {
 							// goes again until not check. Revert to old board
 							board.pieces = temp;
+						}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
+							System.out.println("Check\n");
 						}
 						// ===============
 
@@ -183,12 +187,11 @@ public class Chess {
 
 				boolean blackInCheck = Board.isItCheck(board, true);
 				boolean whiteInCheck = Board.isItCheck(board, false);
-				if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-					System.out.println("Check\n");
-				}
 				if ((!blackTurn && blackInCheck) || (blackTurn && whiteInCheck)) {
 					// goes again until not check. Revert to old board
 					board.pieces = temp;
+				}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
+					System.out.println("Check\n");
 				}
 				// ===============
 

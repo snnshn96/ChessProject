@@ -945,9 +945,7 @@ class Queen extends Piece {
 
 	public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
 		ArrayList<boardLoc> points = new ArrayList<boardLoc>();
-		Piece currpiece = board.pieces[loc.row][loc.col];
-
-		//Bishop Stuff
+		// Bishop Stuff
 		// Left Up
 		int newRow = loc.row + 1;
 		int newCol = loc.col - 1;
@@ -996,7 +994,7 @@ class Queen extends Piece {
 			newRow--;
 			newCol++;
 		}
-		
+
 		// Rook Stuff
 		for (int row = 0; row < 8; row++) {
 			if (canIAttackHere(board, new int[] { loc.col, loc.row, loc.col, row })) {
@@ -1091,11 +1089,37 @@ class King extends Piece {
 		return board;
 	}
 
-	// public boolean canIAttackHere(Board board, int[] moves) {
-	// return false;
-	// }
-	//
-	// public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
-	// return null;
-	// }
+	public boolean canIAttackHere(Board board, int[] moves) {
+		// System.out.println("This is a king piece");
+		boolean valid = false;
+		int[] kingoffset = { (moves[0] - moves[2]), (moves[1] - moves[3]) };
+		int[][] offsets = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 1 }, { -1, 1 }, { -1, -1 }, { 1, -1 } };
+		for (int i = 0; i < offsets.length; i++) {
+			if (Arrays.equals(offsets[i], kingoffset))
+				valid = true;
+		}
+		if (valid && (board.pieces[moves[3]][moves[2]] == null || (board.pieces[moves[3]][moves[2]] instanceof Piece
+				&& board.pieces[moves[3]][moves[2]].black != this.black))) {
+			return true;
+		}
+		return false;
+	}
+
+	public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
+		ArrayList<boardLoc> points = new ArrayList<boardLoc>();
+		int[][] offsets = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 1 }, { -1, 1 }, { -1, -1 }, { 1, -1 } };
+		int newRow = 0;
+		int newCol = 0;
+		
+		for (int[] off : offsets) {
+			newRow = off[0] + loc.row;
+			newCol = off[1] + loc.col;
+			if(newRow <=7 && newRow >=0 && newCol <=7 && newCol >=0) {
+				if(canIAttackHere(board, new int[] {loc.col, loc.row, newCol, newRow})) {
+					points.add(new boardLoc(newRow, newCol));
+				}
+			}
+		}
+		return points;
+	}
 }
