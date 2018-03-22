@@ -226,7 +226,6 @@ class Rook extends Piece {
 					count++;
 				}
 			}
-
 			// does not account for capturing pieces yet
 			// System.out.println("b4 loop");
 			for (int i = 0; i < check.length; i++) {
@@ -241,13 +240,10 @@ class Rook extends Piece {
 					}
 				}
 			}
-
 			// if reached this point, valid move
 			// check for capture
 			valid = true;
-		}
-
-		else if (moves[1] == moves[3]) {
+		} else if (moves[1] == moves[3]) {
 			// rows are the same
 			Piece[] check = new Piece[Math.abs(moves[2] - moves[0])];
 			// System.out.println(check.length);
@@ -696,6 +692,7 @@ class Queen extends Piece {
 		// rook stuff
 		if (moves[0] == moves[2] || moves[1] == moves[3]) {
 			// moving in rook pattern
+			boolean valid = false;
 			int count = 0;
 			// moving up or down
 			if (moves[0] == moves[2]) {
@@ -704,66 +701,81 @@ class Queen extends Piece {
 				// look at all the spaces between the rows
 				if (moves[1] < moves[3]) {
 					// rook is moving up
-					for (int i = moves[3]; i > moves[1] + 1; i--) {
+					for (int i = moves[3]; i > moves[1]; i--) {
+						// System.out.println(board.pieces[i][moves[0]] + " " + count);
 						check[count] = board.pieces[i][moves[0]];
 						count++;
 					}
 				} else {
-					for (int i = moves[1] - 1; i > moves[3]; i--) {
+					// going down
+					for (int i = moves[3]; i < moves[1]; i++) {
 						check[count] = board.pieces[i][moves[0]];
 						count++;
 					}
 				}
-
 				// does not account for capturing pieces yet
-				for (int i = 0; i < check.length - 1; i++) {
+				// System.out.println("b4 loop");
+				for (int i = 0; i < check.length; i++) {
+					// System.out.println("checkarr "+ check[i] + " " + i);
 					if (check[i] instanceof Piece) {
 						// System.out.println(count);
-						// System.out.println("Illegal move, try again");
-						return board;
+						if (i == 0 && check[i].black != this.black) {
+							continue;
+						} else {
+							// System.out.println("Illegal move, try again");
+							return board;
+						}
 					}
 				}
-
 				// if reached this point, valid move
 				// check for capture
-				Piece m = board.pieces[moves[1]][moves[0]];
-				board.pieces[moves[3]][moves[2]] = m;
-				board.pieces[moves[1]][moves[0]] = null;
-
-				return board;
+				valid = true;
 			} else if (moves[1] == moves[3]) {
+				// rows are the same
 				Piece[] check = new Piece[Math.abs(moves[2] - moves[0])];
 				// System.out.println(check.length);
 				// look at all the spaces between the rows
 				if (moves[0] < moves[2]) {
-					// rook is moving up
-					for (int i = moves[2]; i > moves[0] + 1; i--) {
-						check[count] = board.pieces[i][moves[1]];
+					// rook is moving left
+					for (int i = moves[2]; i > moves[0]; i--) {
+						check[count] = board.pieces[moves[1]][i];
 						count++;
 					}
 				} else {
-					for (int i = moves[0] - 1; i > moves[2]; i--) {
-						check[count] = board.pieces[i][moves[1]];
+					// going right
+					for (int i = moves[2]; i > moves[0]; i++) {
+						check[count] = board.pieces[moves[1]][i];
 						count++;
 					}
 				}
 
 				// does not account for capturing pieces yet
-				for (int i = 0; i < check.length - 1; i++) {
+				for (int i = 0; i < check.length; i++) {
 					// System.out.print(check[i] + " ");
 					if (check[i] instanceof Piece) {
 						// System.out.println(count);
-						// System.out.println("Illegal move, try again");
-						return board;
+						if (i == 0 && check[i].black != this.black) {
+							continue;
+						} else {
+							// System.out.println("Illegal move, try again");
+							return board;
+						}
 					}
 				}
 
 				// if reached this point, valid move
-				// check for capture
+
+				valid = true;
+			}
+			if (valid && (board.pieces[moves[3]][moves[2]] == null || (board.pieces[moves[3]][moves[2]] instanceof Piece
+					&& board.pieces[moves[3]][moves[2]].black != this.black))) {
 				Piece m = board.pieces[moves[1]][moves[0]];
 				board.pieces[moves[3]][moves[2]] = m;
 				board.pieces[moves[1]][moves[0]] = null;
-
+				this.moved = true;
+				return board;
+			} else {
+				// System.out.println("Illegal move, try again");
 				return board;
 			}
 		}
@@ -830,65 +842,85 @@ class Queen extends Piece {
 		// rook stuff
 		if (moves[0] == moves[2] || moves[1] == moves[3]) {
 			// moving in rook pattern
+			boolean valid = false;
 			int count = 0;
 			// moving up or down
 			if (moves[0] == moves[2]) {
 				Piece[] check = new Piece[Math.abs(moves[3] - moves[1])];
-				// System.out.println(check.length);
-				// look at all the spaces between the rows
 				if (moves[1] < moves[3]) {
 					// rook is moving up
-					for (int i = moves[3]; i > moves[1] + 1; i--) {
+					for (int i = moves[3]; i > moves[1]; i--) {
+						// System.out.println(board.pieces[i][moves[0]] + " " + count);
 						check[count] = board.pieces[i][moves[0]];
 						count++;
 					}
 				} else {
-					for (int i = moves[1] - 1; i > moves[3]; i--) {
+					// going down
+					for (int i = moves[3]; i < moves[1]; i++) {
 						check[count] = board.pieces[i][moves[0]];
 						count++;
 					}
 				}
-
 				// does not account for capturing pieces yet
-				for (int i = 0; i < check.length - 1; i++) {
+				// System.out.println("b4 loop");
+				for (int i = 0; i < check.length; i++) {
+					// System.out.println("checkarr "+ check[i] + " " + i);
 					if (check[i] instanceof Piece) {
 						// System.out.println(count);
-						// System.out.println("Illegal move, try again");
-						return false;
+						if (i == 0 && check[i].black != this.black) {
+							continue;
+						} else {
+							// System.out.println("Illegal move, try again");
+							return false;
+						}
 					}
 				}
-
-				return true;
+				// if reached this point, valid move
+				// check for capture
+				valid = true;
 			} else if (moves[1] == moves[3]) {
+				// rows are the same
 				Piece[] check = new Piece[Math.abs(moves[2] - moves[0])];
 				// System.out.println(check.length);
 				// look at all the spaces between the rows
 				if (moves[0] < moves[2]) {
-					// rook is moving up
-					for (int i = moves[2]; i > moves[0] + 1; i--) {
-						check[count] = board.pieces[i][moves[1]];
+					// rook is moving left
+					for (int i = moves[2]; i > moves[0]; i--) {
+						check[count] = board.pieces[moves[1]][i];
 						count++;
 					}
 				} else {
-					for (int i = moves[0] - 1; i > moves[2]; i--) {
-						check[count] = board.pieces[i][moves[1]];
+					// going right
+					for (int i = moves[2]; i > moves[0]; i++) {
+						check[count] = board.pieces[moves[1]][i];
 						count++;
 					}
 				}
 
 				// does not account for capturing pieces yet
-				for (int i = 0; i < check.length - 1; i++) {
+				for (int i = 0; i < check.length; i++) {
 					// System.out.print(check[i] + " ");
 					if (check[i] instanceof Piece) {
 						// System.out.println(count);
-						// System.out.println("Illegal move, try again");
-						return false;
+						if (i == 0 && check[i].black != this.black) {
+							continue;
+						} else {
+							// System.out.println("Illegal move, try again");
+							return false;
+						}
 					}
 				}
 
 				// if reached this point, valid move
-				// check for capture
+
+				valid = true;
+			}
+			if (valid && (board.pieces[moves[3]][moves[2]] == null || (board.pieces[moves[3]][moves[2]] instanceof Piece
+					&& board.pieces[moves[3]][moves[2]].black != this.black))) {
 				return true;
+			} else {
+				// System.out.println("Illegal move, try again");
+				return false;
 			}
 		}
 
