@@ -107,11 +107,11 @@ public class Chess {
 					// goes again until not check. Revert to old board
 					board.pieces = temp;
 				}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-					if(Board.isItCheckMate(board, blackTurn)) {
-						System.out.println("Checkmate\n");
+					if(Board.isItCheckMate(board, !blackTurn)) {
 						gameOn = false;
 						board.drawBoard();
-						if(blackTurn) {
+						System.out.println("\nCheckmate\n");
+						if(!blackTurn) {
 							System.out.println("Black wins");
 							;
 						} else {
@@ -151,11 +151,11 @@ public class Chess {
 							// goes again until not check. Revert to old board
 							board.pieces = temp;
 						}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-							if(Board.isItCheckMate(board, blackTurn)) {
-								System.out.println("Checkmate\n");
+							if(Board.isItCheckMate(board, !blackTurn)) {
 								gameOn = false;
 								board.drawBoard();
-								if(blackTurn) {
+								System.out.println("\nCheckmate\n");
+								if(!blackTurn) {
 									System.out.println("Black wins");
 									;
 								} else {
@@ -215,11 +215,11 @@ public class Chess {
 					// goes again until not check. Revert to old board
 					board.pieces = temp;
 				}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-					if(Board.isItCheckMate(board, blackTurn)) {
-						System.out.println("Checkmate\n");
+					if(Board.isItCheckMate(board, !blackTurn)) {
 						gameOn = false;
 						board.drawBoard();
-						if(blackTurn) {
+						System.out.println("\nCheckmate\n");
+						if(!blackTurn) {
 							System.out.println("Black wins");
 							;
 						} else {
