@@ -389,58 +389,44 @@ class Bishop extends Piece {
 		if (Math.abs(moves[0] - moves[2]) != Math.abs(moves[1] - moves[3])) {
 			// System.out.println("Illegal move, try again");
 			return board;
+		} else if (board.pieces[moves[3]][moves[2]] != null && board.pieces[moves[3]][moves[2]] instanceof Piece
+				&& board.pieces[moves[1]][moves[0]].black == board.pieces[moves[3]][moves[2]].black) {
+			return board;
 		} else {
-			Piece[] check = new Piece[Math.abs(moves[3] - moves[1])];
-			int count = 0;
-			if (Math.abs(moves[2] - moves[0]) == 1) {
-				// System.out.println("1 col apart");
-				if (board.pieces[moves[3]][moves[2]] instanceof Piece
-						&& this.black == board.pieces[moves[3]][moves[2]].black) {
-					// System.out.println("Illegal move, try again");
-					return board;
-				}
-
-			}
+			// Piece[] check = new Piece[Math.abs(moves[3] - moves[1])];
+			ArrayList<Piece> check = new ArrayList<Piece>();
 
 			if (moves[0] < moves[2]) {
 				if (moves[1] < moves[3]) {
 					// moving top right
-					// System.out.println("top right");
-					for (int i = 1; i < check.length; i++) {
-						check[count] = board.pieces[moves[1] + i][moves[0] + i];
-						count++;
+					for (int i = 1; (moves[1] + i < moves[3] && moves[0] + i < moves[2]); i++) {
+						if (board.pieces[moves[1] + i][moves[0] + i] instanceof Piece) {
+							return board;
+						}
 					}
 				} else {
 					// moving bottom right
-					// System.out.println("bot right");
-					for (int i = 1; i < check.length - 1; i++) {
-						check[count] = board.pieces[moves[1] - i][moves[0] + i];
-						count++;
+					for (int i = 1; (moves[1] - i > moves[3] && moves[0] + i < moves[2]); i++) {
+						if (board.pieces[moves[1] - i][moves[0] + i] instanceof Piece) {
+							return board;
+						}
 					}
 				}
 			} else {
 				if (moves[1] < moves[3]) {
 					// moving top left
-					// System.out.println("top left");
-					for (int i = 1; i < check.length; i++) {
-						check[count] = board.pieces[moves[1] + i][moves[0] - i];
-						count++;
+					for (int i = 1; (moves[1] + i < moves[3] && moves[0] - i > moves[2]); i++) {
+						if (board.pieces[moves[1] + i][moves[0] - i] instanceof Piece) {
+							return board;
+						}
 					}
 				} else {
 					// moving bottom left
-					// System.out.println("bot left");
-					for (int i = 1; i < check.length; i++) {
-						check[count] = board.pieces[moves[1] - i][moves[0] - i];
-						count++;
+					for (int i = 1; (moves[1] - i > moves[3] && moves[0] - i > moves[2]); i++) {
+						if (board.pieces[moves[1] - i][moves[0] - i] instanceof Piece) {
+							return board;
+						}
 					}
-				}
-			}
-			// System.out.println(Arrays.toString(check));
-			for (int i = 0; i < check.length; i++) {
-				if (check[i] instanceof Piece) {
-					// System.out.println(count);
-					// System.out.println("Illegal move, try again");
-					return board;
 				}
 			}
 			Piece m = board.pieces[moves[1]][moves[0]];
@@ -452,13 +438,107 @@ class Bishop extends Piece {
 
 	}
 
-	// public boolean canIAttackHere(Board board, int[] moves) {
-	// return false;
-	// }
-	//
-	// public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
-	// return null;
-	// }
+	public boolean canIAttackHere(Board board, int[] moves) {
+		if (Math.abs(moves[0] - moves[2]) != Math.abs(moves[1] - moves[3])) {
+			return false;
+		} else if (board.pieces[moves[3]][moves[2]] != null && board.pieces[moves[3]][moves[2]] instanceof Piece
+				&& board.pieces[moves[1]][moves[0]].black == board.pieces[moves[3]][moves[2]].black) {
+			return false;
+		} else {
+			ArrayList<Piece> check = new ArrayList<Piece>();
+			if (moves[0] < moves[2]) {
+				if (moves[1] < moves[3]) {
+					// moving top right
+					for (int i = 1; (moves[1] + i < moves[3] && moves[0] + i < moves[2]); i++) {
+						if (board.pieces[moves[1] + i][moves[0] + i] instanceof Piece) {
+							return false;
+						}
+					}
+				} else {
+					// moving bottom right
+					for (int i = 1; (moves[1] - i > moves[3] && moves[0] + i < moves[2]); i++) {
+						if (board.pieces[moves[1] - i][moves[0] + i] instanceof Piece) {
+							return false;
+						}
+					}
+				}
+			} else {
+				if (moves[1] < moves[3]) {
+					// moving top left
+					for (int i = 1; (moves[1] + i < moves[3] && moves[0] - i > moves[2]); i++) {
+						if (board.pieces[moves[1] + i][moves[0] - i] instanceof Piece) {
+							return false;
+						}
+					}
+				} else {
+					// moving bottom left
+					for (int i = 1; (moves[1] - i > moves[3] && moves[0] - i > moves[2]); i++) {
+						if (board.pieces[moves[1] - i][moves[0] - i] instanceof Piece) {
+							return false;
+						}
+					}
+				}
+			}
+			return true;
+		}
+
+	}
+
+	public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
+		ArrayList<boardLoc> points = new ArrayList<boardLoc>();
+		Piece currpiece = board.pieces[loc.row][loc.col];
+
+		// Left Up
+		int newRow = loc.row + 1;
+		int newCol = loc.col - 1;
+		while (newRow <= 7 && newCol >= 0) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow++;
+			newCol--;
+		}
+		// Left Down
+		newRow = loc.row - 1;
+		newCol = loc.col - 1;
+		while (newRow >= 0 && newCol >= 0) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow--;
+			newCol--;
+		}
+		// Right Up
+		newRow = loc.row + 1;
+		newCol = loc.col + 1;
+		while (newRow <= 7 && newCol <= 7) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow++;
+			newCol++;
+		}
+		// Right Down
+		newRow = loc.row - 1;
+		newCol = loc.col + 1;
+		while (newRow >= 0 && newCol <= 7) {
+			if (canIAttackHere(board, new int[] { loc.col, loc.row, newCol, newRow })) {
+				points.add(new boardLoc(newRow, newCol));
+			} else {
+				break;
+			}
+			newRow--;
+			newCol++;
+		}
+
+		return points;
+	}
 }
 
 class Knight extends Piece {
