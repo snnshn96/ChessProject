@@ -596,13 +596,94 @@ class Knight extends Piece {
 		return board;
 	}
 
-	// public boolean canIAttackHere(Board board, int[] moves) {
-	// return false;
-	// }
-	//
-	// public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
-	// return null;
-	// }
+	public boolean canIAttackHere(Board board, int[] moves) {
+		boolean valid = false;
+		if (moves[0] < moves[2]) {
+
+			if (moves[1] < moves[3]) {
+				// moving upper right
+				if ((moves[1] + 2 == moves[3] && moves[0] + 1 == moves[2])
+						|| (moves[1] + 1 == moves[3] && moves[0] + 2 == moves[2])) {
+					valid = true;
+				}
+			} else {
+				// moving bottom right
+				if ((moves[1] - 2 == moves[3] && moves[0] + 1 == moves[2])
+						|| (moves[1] - 1 == moves[3] && moves[0] + 2 == moves[2])) {
+					valid = true;
+				}
+			}
+		} else {
+			if (moves[1] < moves[3]) {
+				// moving upper left
+				if ((moves[1] + 2 == moves[3] && moves[0] - 1 == moves[2])
+						|| (moves[1] + 1 == moves[3] && moves[0] - 2 == moves[2])) {
+					valid = true;
+				}
+			} else {
+				// moving bottom left
+				if ((moves[1] - 1 == moves[3] && moves[0] - 2 == moves[2])
+						|| (moves[1] - 2 == moves[3] && moves[0] - 1 == moves[2])) {
+					valid = true;
+				}
+			}
+		}
+
+		if (valid && (board.pieces[moves[3]][moves[2]] == null || (board.pieces[moves[3]][moves[2]] instanceof Piece
+				&& board.pieces[moves[3]][moves[2]].black != this.black))) {
+			return true;
+		}
+		return false;
+	}
+
+	public ArrayList<boardLoc> attackPoints(Board board, boardLoc loc) {
+		ArrayList<boardLoc> points = new ArrayList<boardLoc>();
+		// up rights
+		int newRow = loc.row + 2;
+		int newCol = loc.col + 1;
+		if (newRow <= 7 && newCol <= 7 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		newRow = loc.row + 1;
+		newCol = loc.col + 2;
+		if (newRow <= 7 && newCol <= 7 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		// down rights
+		newRow = loc.row - 2;
+		newCol = loc.col + 1;
+		if (newRow >= 0 && newCol <= 7 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		newRow = loc.row - 1;
+		newCol = loc.col + 2;
+		if (newRow >= 0 && newCol <= 7 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		// up left
+		newRow = loc.row + 2;
+		newCol = loc.col - 1;
+		if (newRow <= 7 && newCol >= 0 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		newRow = loc.row + 1;
+		newCol = loc.col - 2;
+		if (newRow <= 7 && newCol >= 0 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		// down left
+		newRow = loc.row - 2;
+		newCol = loc.col - 1;
+		if (newRow >= 0 && newCol >= 0 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		newRow = loc.row - 1;
+		newCol = loc.col - 2;
+		if (newRow >= 0 && newCol >= 0 && canIAttackHere(board, new int[] { loc.row, loc.col, newRow, newCol })) {
+			points.add(new boardLoc(newRow, newCol));
+		}
+		return points;
+	}
 }
 
 class Queen extends Piece {
