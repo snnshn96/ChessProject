@@ -91,7 +91,7 @@ public class Chess {
 			// inputToInt(fromTo)[1] + " " + inputToInt(fromTo)[2] + " "+
 			// inputToInt(fromTo)[3]);
 			int[] input = inputToInt(fromTo);
-
+			boolean CHECK = false;
 			if (fromTo.length == 2 && board.pieces[input[1]][input[0]] instanceof Pawn
 					&& ((board.pieces[input[1]][input[0]].black && input[3] == 0)
 							|| (!board.pieces[input[1]][input[0]].black && input[3] == 7))) {
@@ -103,12 +103,24 @@ public class Chess {
 				// ====== CHECK
 				boolean blackInCheck = Board.isItCheck(board, true);
 				boolean whiteInCheck = Board.isItCheck(board, false);
-				
 				if ((!blackTurn && blackInCheck) || (blackTurn && whiteInCheck)) {
 					// goes again until not check. Revert to old board
 					board.pieces = temp;
 				}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-					System.out.println("Check\n");
+					if(Board.isItCheckMate(board, blackTurn)) {
+						System.out.println("Checkmate\n");
+						gameOn = false;
+						board.drawBoard();
+						if(blackTurn) {
+							System.out.println("Black wins");
+							;
+						} else {
+							System.out.println("White wins");
+						}
+						break;
+					} else {
+						CHECK = true;
+					}
 				}
 				// ===============
 
@@ -139,7 +151,20 @@ public class Chess {
 							// goes again until not check. Revert to old board
 							board.pieces = temp;
 						}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-							System.out.println("Check\n");
+							if(Board.isItCheckMate(board, blackTurn)) {
+								System.out.println("Checkmate\n");
+								gameOn = false;
+								board.drawBoard();
+								if(blackTurn) {
+									System.out.println("Black wins");
+									;
+								} else {
+									System.out.println("White wins");
+								}
+								break;
+							} else {
+								CHECK = true;
+							}
 						}
 						// ===============
 
@@ -184,14 +209,26 @@ public class Chess {
 				board = board.pieces[input[1]][input[0]].makemove(board, input);
 
 				// ====== CHECK
-
 				boolean blackInCheck = Board.isItCheck(board, true);
 				boolean whiteInCheck = Board.isItCheck(board, false);
 				if ((!blackTurn && blackInCheck) || (blackTurn && whiteInCheck)) {
 					// goes again until not check. Revert to old board
 					board.pieces = temp;
 				}else if ((blackTurn && blackInCheck) || (!blackTurn && whiteInCheck)) {
-					System.out.println("Check\n");
+					if(Board.isItCheckMate(board, blackTurn)) {
+						System.out.println("Checkmate\n");
+						gameOn = false;
+						board.drawBoard();
+						if(blackTurn) {
+							System.out.println("Black wins");
+							;
+						} else {
+							System.out.println("White wins");
+						}
+						break;
+					} else {
+						CHECK = true;
+					}
 				}
 				// ===============
 
@@ -209,9 +246,12 @@ public class Chess {
 			// take board and false all en passants on opposite turn
 			board.pieces = falseEnpassant(board.pieces, blackTurn);
 
-			if (currTurn != blackTurn)
+			if (currTurn != blackTurn) {
 				board.drawBoard();
-			else {
+				if (CHECK)  {
+					System.out.println("\nCheck");
+				}
+			} else {
 				System.out.println("Illegal move, try again");
 			}
 		}
