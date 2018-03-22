@@ -1024,7 +1024,8 @@ class King extends Piece {
 		int[][] offsets = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 }, { 1, 1 }, { -1, 1 }, { -1, -1 }, { 1, -1 } };
 
 		// first check if its trying to castle
-		if (Math.abs(moves[0] - moves[2]) == 2) {
+		boolean inCheck = Board.isItCheck(board, board.pieces[moves[1]][moves[0]].black);
+		if (Math.abs(moves[0] - moves[2]) == 2 && !inCheck) {
 			// trying to move two spaces either side
 			if (this.moved) {
 				// System.out.println("Illegal move, try again");

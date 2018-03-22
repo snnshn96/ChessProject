@@ -23,12 +23,12 @@ public class Chess {
 		board.pieces[7][2] = null;
 		
 		
-		board.pieces[3][4] = board.pieces[0][4];
-		board.pieces[0][4] = null;
-		board.pieces[5][4] = board.pieces[7][4];
-		board.pieces[7][4] = null;
-		//board.pieces[4][4] = board.pieces[7][3]; 
-		//board.pieces[7][3] = null;
+//		board.pieces[3][4] = board.pieces[0][4];
+//		board.pieces[0][4] = null;
+//		board.pieces[5][4] = board.pieces[7][4];
+//		board.pieces[7][4] = null;
+		board.pieces[4][4] = board.pieces[7][3]; 
+		board.pieces[7][3] = null;
 		// board.pieces[6][0] = board.pieces[1][1];
 		// board.pieces[1][1] = null;
 
