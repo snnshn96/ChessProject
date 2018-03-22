@@ -134,11 +134,29 @@ public class Board {
 					}
 					// ========== Rook or Queen Hor&Ver ==========
 					if (currpiece instanceof Rook || currpiece instanceof Queen) {
-
+						offsets = new int[][] {
+							//going up
+							{1, 0},{2, 0},{3, 0},{4, 0},{5, 0},{6, 0},{7, 0},
+							//going down
+							{-1, 0},{-2, 0},{-3, 0},{-4, 0},{-5, 0},{-6, 0},{-7, 0},
+							//going right
+							{0, 1},{0, 2},{0, 3},{0, 4},{0, 5},{0, 6},{0, 7},
+							//going left
+							{0, -1},{0, -2},{0, -3},{0, -4},{0, -5},{0, -6},{0, -7}
+							};
 					}
 					// ========== Bishop or Queen Diag ==========
 					if (currpiece instanceof Bishop || currpiece instanceof Queen) {
-
+						offsets = new int[][] {
+							//going upright
+							{1, 1},{2, 2},{3, 3},{4, 4},{5, 5},{6, 6},{7, 7},
+							//going up left
+							{1, -1},{2, -2},{3, -3},{4, -4},{5, -5},{6, -6},{7, -7},
+							//going down right
+							{-1, 1},{-2, 2},{-3, 3},{-4, 4},{-5, 5},{-6, 6},{-7, 7},
+							//going down left
+							{-1, -1},{-2, -2},{-3, -3},{-4, -4},{-5, -5},{-6, -6},{-7, -7}
+							};
 					}
 					// ========== Check Moves ========== //
 					for (int[] off : offsets) {
